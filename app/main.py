@@ -1,10 +1,13 @@
+import os
+
+import waitress
 from flask import Flask, render_template, request, url_for, redirect
 
 from app.ozon import create_book, add_book, search_book, search_book_by_id, remove_book_by_id, create_empty_book
 
 
 
-def main():
+def start():
     app = Flask(__name__)
 
     container = []
@@ -61,9 +64,11 @@ def main():
          #урл_фор редиректит на определенню стьагницу - которую прост опишем имя без расширения после точки /html
 
 
-
-    app.run(port=9009, debug=True)
+    if os.getenv('APP_ENV') == 'PROD' and os.getenv('PORT'):
+        waitress.serve(app, port=os.getenv('PORT'))
+    else:
+     app.run(port=9009, debug=True)
 
 
 if __name__ == '__main__':
-    main()
+    start()
